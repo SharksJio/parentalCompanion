@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Child icon with a shield theme -->
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M54,22L30,32v14c0,14.8 10.2,28.7 24,32c13.8,-3.3 24,-17.2 24,-32V32L54,22zM52,60h-4v-4h4V60zM52,52h-4V36h4V52zM56,60v-4h4v4H56zM56,52V36h4v16H56z"/>
+    <path
+        android:fillColor="@color/primary"
+        android:pathData="M54,28l-18,7.5v11c0,11.1 7.7,21.5 18,24c10.3,-2.5 18,-12.9 18,-24v-11L54,28z"/>
+</vector>

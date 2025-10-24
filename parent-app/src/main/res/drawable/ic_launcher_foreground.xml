@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Parent icon with a family theme -->
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M54,24c-5.5,0 -10,4.5 -10,10s4.5,10 10,10s10,-4.5 10,-10S59.5,24 54,24zM54,44c-7.7,0 -23,3.9 -23,11.7V64h46v-8.3C77,47.9 61.7,44 54,44z"/>
+    <path
+        android:fillColor="@color/primary"
+        android:pathData="M70,24c-3.9,0 -7,3.1 -7,7s3.1,7 7,7s7,-3.1 7,-7S73.9,24 70,24zM70,38c-5.9,0 -17.8,3 -17.8,9v6h35.6v-6C87.8,41 75.9,38 70,38z"/>
+    <path
+        android:fillColor="@color/accent"
+        android:pathData="M38,24c-3.9,0 -7,3.1 -7,7s3.1,7 7,7s7,-3.1 7,-7S41.9,24 38,24zM38,38c-5.9,0 -17.8,3 -17.8,9v6h35.6v-6C55.8,41 43.9,38 38,38z"/>
+</vector>
