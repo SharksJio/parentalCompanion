@@ -15,6 +15,18 @@ class DashboardViewModel : ViewModel() {
     private val _childDevice = MutableStateFlow<ChildDevice?>(null)
     val childDevice: StateFlow<ChildDevice?> = _childDevice
     
+    private val _isConnectedToFirebase = MutableStateFlow(false)
+    val isConnectedToFirebase: StateFlow<Boolean> = _isConnectedToFirebase
+    
+    init {
+        // Monitor Firebase connection state
+        viewModelScope.launch {
+            repository.observeConnectionState().collect { isConnected ->
+                _isConnectedToFirebase.value = isConnected
+            }
+        }
+    }
+    
     fun loadChildDevice(deviceId: String) {
         viewModelScope.launch {
             repository.observeChildDevice(deviceId).collect { device ->

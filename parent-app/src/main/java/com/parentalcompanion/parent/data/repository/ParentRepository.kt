@@ -17,6 +17,29 @@ class ParentRepository {
     private val locationsRef = database.getReference("locations")
     private val geofencesRef = database.getReference("geofences")
     
+    init {
+        // Ensure Firebase connection is active by keeping the connection alive
+        database.goOnline()
+    }
+    
+    // Monitor Firebase connection state
+    fun observeConnectionState(): Flow<Boolean> = callbackFlow {
+        val connectedRef = database.getReference(".info/connected")
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val connected = snapshot.getValue(Boolean::class.java) ?: false
+                trySend(connected)
+            }
+            
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
+            }
+        }
+        
+        connectedRef.addValueEventListener(listener)
+        awaitClose { connectedRef.removeEventListener(listener) }
+    }
+    
     // Child Device Management
     fun observeChildDevice(deviceId: String): Flow<ChildDevice?> = callbackFlow {
         val listener = object : ValueEventListener {
