@@ -13,4 +13,5 @@
     <color name="error">#FFF44336</color>
     <color name="warning">#FFFF9800</color>
     <color name="lock_overlay">#CC000000</color>
+    <color name="ic_launcher_background">#FF4CAF50</color>
 </resources>
