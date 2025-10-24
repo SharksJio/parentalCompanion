@@ -33,11 +33,22 @@ class DashboardFragment : Fragment() {
         val deviceId = "test_device_id"
         viewModel.loadChildDevice(deviceId)
         
+        // Observe child device status
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.childDevice.collect { device ->
-                device?.let {
-                    binding.tvDeviceStatus.text = if (it.isOnline) "Online" else "Offline"
+                if (device != null) {
+                    binding.tvDeviceStatus.text = if (device.isOnline) "Online" else "Offline"
+                } else {
+                    binding.tvDeviceStatus.text = "No device registered"
                 }
+            }
+        }
+        
+        // Observe Firebase connection state for debugging
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isConnectedToFirebase.collect { isConnected ->
+                // You can add visual feedback here if needed
+                // For example, show a toast or update UI when connection changes
             }
         }
     }

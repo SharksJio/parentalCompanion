@@ -17,6 +17,11 @@ class ChildRepository {
     private val locationsRef = database.getReference("locations")
     private val geofencesRef = database.getReference("geofences")
     
+    init {
+        // Ensure Firebase connection is active
+        database.goOnline()
+    }
+    
     suspend fun updateDeviceStatus(deviceId: String, isOnline: Boolean) {
         devicesRef.child(deviceId).child("isOnline").setValue(isOnline).await()
         devicesRef.child(deviceId).child("lastSeen").setValue(System.currentTimeMillis()).await()
