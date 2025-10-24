@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_dashboard"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="@string/menu_dashboard" />
+    <item
+        android:id="@+id/nav_screen_time"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="@string/menu_screen_time" />
+    <item
+        android:id="@+id/nav_app_control"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/menu_app_control" />
+    <item
+        android:id="@+id/nav_contacts"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:title="@string/menu_contacts" />
+    <item
+        android:id="@+id/nav_location"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:title="@string/menu_location" />
+    <item
+        android:id="@+id/nav_device_lock"
+        android:icon="@android:drawable/ic_lock_lock"
+        android:title="@string/menu_device_lock" />
+</menu>

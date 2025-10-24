@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.parentalcompanion.parent.ui.dashboard.DashboardFragment"
+        android:label="@string/dashboard_title" />
+
+    <fragment
+        android:id="@+id/screenTimeFragment"
+        android:name="com.parentalcompanion.parent.ui.screentime.ScreenTimeFragment"
+        android:label="@string/screen_time_title" />
+
+    <fragment
+        android:id="@+id/appControlFragment"
+        android:name="com.parentalcompanion.parent.ui.appcontrol.AppControlFragment"
+        android:label="@string/app_control_title" />
+
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.parentalcompanion.parent.ui.contacts.ContactsFragment"
+        android:label="@string/contacts_title" />
+
+    <fragment
+        android:id="@+id/locationFragment"
+        android:name="com.parentalcompanion.parent.ui.location.LocationFragment"
+        android:label="@string/location_title" />
+
+    <fragment
+        android:id="@+id/deviceLockFragment"
+        android:name="com.parentalcompanion.parent.ui.devicelock.DeviceLockFragment"
+        android:label="@string/device_lock_title" />
+
+</navigation>
