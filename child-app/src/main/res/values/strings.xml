@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Child Monitor</string>
+    
+    <!-- Main Screen -->
+    <string name="main_title">Child Monitor</string>
+    <string name="monitoring_active">Monitoring Active</string>
+    <string name="monitoring_inactive">Monitoring Inactive</string>
+    <string name="status">Status</string>
+    
+    <!-- Lock Screen -->
+    <string name="device_locked_message">This device is locked by your parent</string>
+    <string name="screen_time_exceeded">Screen time limit has been exceeded</string>
+    <string name="time_remaining">Time Remaining: %s</string>
+    
+    <!-- Notifications -->
+    <string name="monitoring_notification_title">Child Monitor Active</string>
+    <string name="monitoring_notification_text">Monitoring services are running</string>
+    <string name="location_notification_title">Location Tracking</string>
+    <string name="location_notification_text">Sharing location with parent</string>
+    
+    <!-- Permissions -->
+    <string name="permission_usage_stats">Usage Stats Permission</string>
+    <string name="permission_overlay">Display Over Other Apps</string>
+    <string name="permission_location">Location Access</string>
+    <string name="permission_contacts">Contacts Access</string>
+    <string name="permissions_required">Required Permissions</string>
+    <string name="grant_permissions">Grant Permissions</string>
+    
+    <!-- General -->
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+</resources>
