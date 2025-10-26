@@ -18,6 +18,10 @@ cd parentalCompanion
 
 ## Step 2: Firebase Setup (REQUIRED)
 
+**📖 For comprehensive Firebase setup instructions, see [FIREBASE_SETUP.md](FIREBASE_SETUP.md)**
+
+This is a quick overview. If you encounter any issues, refer to the detailed guide above.
+
 ### 2.1 Create Firebase Project
 
 1. Go to [Firebase Console](https://console.firebase.google.com)

@@ -1,16 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Parent icon with a family theme -->
-    <path
-        android:fillColor="@color/white"
-        android:pathData="M54,24c-5.5,0 -10,4.5 -10,10s4.5,10 10,10s10,-4.5 10,-10S59.5,24 54,24zM54,44c-7.7,0 -23,3.9 -23,11.7V64h46v-8.3C77,47.9 61.7,44 54,44z"/>
-    <path
-        android:fillColor="@color/primary"
-        android:pathData="M70,24c-3.9,0 -7,3.1 -7,7s3.1,7 7,7s7,-3.1 7,-7S73.9,24 70,24zM70,38c-5.9,0 -17.8,3 -17.8,9v6h35.6v-6C87.8,41 75.9,38 70,38z"/>
-    <path
-        android:fillColor="@color/accent"
-        android:pathData="M38,24c-3.9,0 -7,3.1 -7,7s3.1,7 7,7s7,-3.1 7,-7S41.9,24 38,24zM38,38c-5.9,0 -17.8,3 -17.8,9v6h35.6v-6C55.8,41 43.9,38 38,38z"/>
+    <group
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:translateX="10.8"
+        android:translateY="10.8">
+        <path
+            android:fillColor="#3DDC84"
+            android:pathData="M 0,0 L 108,0 L 108,108 L 0,108 Z"/>
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M54,20C35.2,20,20,35.2,20,54s15.2,34,34,34s34,-15.2,34,-34S72.8,20,54,20z M48,74H42V52h6V74z M66,74H60V52h6V74z M54,44c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6S57.3,44,54,44z"/>
+    </group>
 </vector>
