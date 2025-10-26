@@ -66,9 +66,11 @@ app/
 ## Setup Instructions
 
 ### Prerequisites
-- Android Studio Arctic Fox or later
+- Android Studio Narwhal (2025.1.1) or later
 - JDK 17
-- Android SDK with minimum API level 24
+- Gradle 8.11 (configured via wrapper)
+- Android SDK with API level 35 (Android 15)
+- Minimum deployment target: API level 24 (Android 7.0)
 - Firebase project setup
 
 ### Firebase Setup
