@@ -1,12 +1,12 @@
 package com.parentalcompanion.parent.data.model
 
 data class Geofence(
-    val id: String = "",
-    val name: String = "",
-    val latitude: Double = 0.0,
-    val longitude: Double = 0.0,
-    val radiusMeters: Float = 100f,
-    val isActive: Boolean = true,
-    val notifyOnEnter: Boolean = true,
-    val notifyOnExit: Boolean = true
+    var id: String = "",
+    var name: String = "",
+    var latitude: Double = 0.0,
+    var longitude: Double = 0.0,
+    var radiusMeters: Float = 100f,
+    var isActive: Boolean = true,
+    var notifyOnEnter: Boolean = true,
+    var notifyOnExit: Boolean = true
 )

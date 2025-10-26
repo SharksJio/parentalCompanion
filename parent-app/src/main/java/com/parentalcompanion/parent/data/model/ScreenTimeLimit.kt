@@ -1,8 +1,8 @@
 package com.parentalcompanion.parent.data.model
 
 data class ScreenTimeLimit(
-    val deviceId: String = "",
-    val dailyLimitMinutes: Int = 0,
-    val usedMinutesToday: Int = 0,
-    val lastUpdated: Long = System.currentTimeMillis()
+    var deviceId: String = "",
+    var dailyLimitMinutes: Int = 0,
+    var usedMinutesToday: Int = 0,
+    var lastUpdated: Long = System.currentTimeMillis()
 )
