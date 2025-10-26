@@ -66,15 +66,18 @@ app/
 ## Setup Instructions
 
 ### Prerequisites
-- Android Studio Narwhal (2025.1.1) or later
+- Android Studio Arctic Fox or later
 - JDK 17
-- Gradle 8.11 (configured via wrapper)
-- Android SDK with API level 35 (Android 15)
-- Minimum deployment target: API level 24 (Android 7.0)
+- Android SDK with minimum API level 24
 - Firebase project setup
 
 ### Firebase Setup
 
+Firebase is **required** for this project to enable real-time communication between parent and child devices.
+
+**📖 For detailed Firebase setup instructions, see [FIREBASE_SETUP.md](FIREBASE_SETUP.md)**
+
+Quick overview:
 1. Create a Firebase project at [https://console.firebase.google.com](https://console.firebase.google.com)
 2. Add two Android apps to your Firebase project:
    - Parent app: `com.parentalcompanion.parent`
@@ -84,8 +87,14 @@ app/
    - `parent-app/google-services.json`
    - `child-app/google-services.json`
 5. Enable Firebase Realtime Database
-6. Enable Firebase Cloud Messaging
-7. Set up Firebase Authentication (optional)
+6. Configure Firebase Security Rules
+7. Enable Firebase Cloud Messaging (automatically enabled)
+
+The [FIREBASE_SETUP.md](FIREBASE_SETUP.md) guide includes:
+- Step-by-step instructions with screenshots
+- Security rules configuration
+- Troubleshooting common issues
+- Production deployment considerations
 
 ### Building the Apps
 
