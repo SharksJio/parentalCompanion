@@ -12,13 +12,21 @@ class AppControlViewModel : ViewModel() {
     
     private val repository = ParentRepository()
     
-    private val _apps = MutableStateFlow<List<AppControl>>(emptyList())
-    val apps: StateFlow<List<AppControl>> = _apps
+    private val _appControls = MutableStateFlow<List<AppControl>>(emptyList())
+    val appControls: StateFlow<List<AppControl>> = _appControls
+    
+    fun loadAppControls(deviceId: String) {
+        viewModelScope.launch {
+            repository.observeAppControls(deviceId).collect { appList ->
+                _appControls.value = appList
+            }
+        }
+    }
     
     fun loadApps(deviceId: String) {
         viewModelScope.launch {
             repository.observeAppControls(deviceId).collect { appList ->
-                _apps.value = appList
+                _appControls.value = appList
             }
         }
     }

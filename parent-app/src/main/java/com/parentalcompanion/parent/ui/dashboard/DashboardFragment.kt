@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.parentalcompanion.parent.R
 import com.parentalcompanion.parent.data.model.QuickAction
@@ -96,13 +97,25 @@ class DashboardFragment : Fragment() {
                 title = "Location",
                 description = "View device location",
                 iconRes = android.R.drawable.ic_menu_mylocation
+            ),
+            QuickAction(
+                id = "contacts",
+                title = "Contacts",
+                description = "Manage allowed contacts",
+                iconRes = android.R.drawable.ic_menu_my_calendar
             )
         )
         quickActionAdapter.submitList(quickActions)
     }
     
     private fun handleQuickAction(action: QuickAction) {
-        // TODO: Navigate to respective screens based on action.id
+        when (action.id) {
+            "lock_device" -> findNavController().navigate(R.id.deviceLockFragment)
+            "screen_time" -> findNavController().navigate(R.id.screenTimeFragment)
+            "app_control" -> findNavController().navigate(R.id.appControlFragment)
+            "location" -> findNavController().navigate(R.id.locationFragment)
+            "contacts" -> findNavController().navigate(R.id.contactsFragment)
+        }
     }
     
     override fun onDestroyView() {
