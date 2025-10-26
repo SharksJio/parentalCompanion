@@ -38,7 +38,7 @@ class ScreenTimeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.screenTimeLimit.collect { screenTime ->
                 if (screenTime != null) {
-                    val usageMinutes = screenTime.usedMinutes
+                    val usageMinutes = screenTime.usedMinutesToday
                     val limitMinutes = screenTime.dailyLimitMinutes
                     
                     val hours = usageMinutes / 60
