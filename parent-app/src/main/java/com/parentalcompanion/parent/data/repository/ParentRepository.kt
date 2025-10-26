@@ -44,8 +44,14 @@ class ParentRepository {
     fun observeChildDevice(deviceId: String): Flow<ChildDevice?> = callbackFlow {
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val device = snapshot.getValue(ChildDevice::class.java)
-                trySend(device)
+                try {
+                    val device = snapshot.getValue(ChildDevice::class.java)
+                    trySend(device)
+                } catch (e: DatabaseException) {
+                    // Log the error and send null to prevent crash
+                    android.util.Log.e("ParentRepository", "Failed to parse ChildDevice", e)
+                    trySend(null)
+                }
             }
             
             override fun onCancelled(error: DatabaseError) {

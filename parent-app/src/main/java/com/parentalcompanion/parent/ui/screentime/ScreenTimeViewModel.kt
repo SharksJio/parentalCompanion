@@ -12,15 +12,19 @@ class ScreenTimeViewModel : ViewModel() {
     
     private val repository = ParentRepository()
     
-    private val _screenTime = MutableStateFlow<ScreenTimeLimit?>(null)
-    val screenTime: StateFlow<ScreenTimeLimit?> = _screenTime
+    private val _screenTimeLimit = MutableStateFlow<ScreenTimeLimit?>(null)
+    val screenTimeLimit: StateFlow<ScreenTimeLimit?> = _screenTimeLimit
     
     fun loadScreenTime(deviceId: String) {
         viewModelScope.launch {
             repository.observeScreenTime(deviceId).collect { limit ->
-                _screenTime.value = limit
+                _screenTimeLimit.value = limit
             }
         }
+    }
+    
+    suspend fun setScreenTimeLimit(deviceId: String, minutes: Int) {
+        repository.setScreenTimeLimit(deviceId, minutes)
     }
     
     fun setDailyLimit(deviceId: String, minutes: Int) {
