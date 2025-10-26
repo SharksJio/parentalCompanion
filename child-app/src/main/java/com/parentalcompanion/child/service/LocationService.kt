@@ -24,6 +24,7 @@ class LocationService : LifecycleService() {
     private var deviceId: String = "test_device_id" // TODO: Get from SharedPreferences
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
+    private lateinit var geofenceMonitor: GeofenceMonitor
     
     companion object {
         private const val CHANNEL_ID = "location_service_channel"
@@ -38,6 +39,7 @@ class LocationService : LifecycleService() {
         startForeground(NOTIFICATION_ID, createNotification())
         
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        geofenceMonitor = GeofenceMonitor(this, fusedLocationClient)
         
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -55,6 +57,13 @@ class LocationService : LifecycleService() {
                 if (requested) {
                     getCurrentLocation()
                 }
+            }
+        }
+        
+        // Observe geofences and monitor them
+        lifecycleScope.launch {
+            repository.observeGeofences(deviceId).collect { geofences ->
+                geofenceMonitor.checkGeofences(geofences)
             }
         }
     }
@@ -104,6 +113,13 @@ class LocationService : LifecycleService() {
                 location.longitude,
                 location.accuracy
             )
+        }
+        
+        // Also check geofences when location updates
+        lifecycleScope.launch {
+            repository.observeGeofences(deviceId).collect { geofences ->
+                geofenceMonitor.checkGeofences(geofences)
+            }
         }
     }
     
