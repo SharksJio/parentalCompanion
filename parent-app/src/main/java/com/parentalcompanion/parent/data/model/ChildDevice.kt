@@ -1,10 +1,14 @@
 package com.parentalcompanion.parent.data.model
 
+import com.google.firebase.database.PropertyName
+
 data class ChildDevice(
-    val deviceId: String = "",
-    val deviceName: String = "",
-    val childName: String = "",
-    val isOnline: Boolean = false,
-    val lastSeen: Long = 0L,
-    val isLocked: Boolean = false
+    var deviceId: String = "",
+    var deviceName: String = "",
+    var childName: String = "",
+    @get:PropertyName("isOnline")
+    @set:PropertyName("isOnline")
+    var isOnline: Boolean = false,
+    var lastSeen: Long = 0L,
+    var isLocked: Boolean = false
 )
