@@ -1,26 +1,21 @@
 {
   "project_info": {
-    "project_number": "123456789012",
-    "project_id": "parental-companion-demo",
-    "storage_bucket": "parental-companion-demo.appspot.com"
+    "project_number": "207430756549",
+    "project_id": "parental-companion",
+    "storage_bucket": "parental-companion.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789012:android:abcdef1234567891",
+        "mobilesdk_app_id": "1:207430756549:android:6c0fe50f5d3b4d0e1e28ac",
         "android_client_info": {
           "package_name": "com.parentalcompanion.child"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDemoKeyForChildApp123456789012"
+          "current_key": "AIzaSyDEfJ2ctYAwC6txfhbgK0v4Q1YZKaDpf7E"
         }
       ],
       "services": {
