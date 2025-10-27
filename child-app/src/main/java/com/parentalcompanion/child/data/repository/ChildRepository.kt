@@ -59,6 +59,22 @@ class ChildRepository {
         awaitClose { screenTimeRef.child(deviceId).removeEventListener(listener) }
     }
     
+    fun observeScreenTime(deviceId: String): Flow<ScreenTimeLimit?> = callbackFlow {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val screenTime = snapshot.getValue(ScreenTimeLimit::class.java)
+                trySend(screenTime)
+            }
+            
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
+            }
+        }
+        
+        screenTimeRef.child(deviceId).addValueEventListener(listener)
+        awaitClose { screenTimeRef.child(deviceId).removeEventListener(listener) }
+    }
+    
     suspend fun updateScreenTimeUsage(deviceId: String, usedMinutes: Int) {
         screenTimeRef.child(deviceId).child("usedMinutesToday").setValue(usedMinutes).await()
         screenTimeRef.child(deviceId).child("lastUpdated").setValue(System.currentTimeMillis()).await()
