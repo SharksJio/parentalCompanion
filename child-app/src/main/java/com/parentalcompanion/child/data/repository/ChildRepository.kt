@@ -28,8 +28,13 @@ class ChildRepository {
     }
     
     suspend fun updateDeviceStatus(deviceId: String, isOnline: Boolean) {
-        devicesRef.child(deviceId).child("isOnline").setValue(isOnline).await()
-        devicesRef.child(deviceId).child("lastSeen").setValue(System.currentTimeMillis()).await()
+        try {
+            devicesRef.child(deviceId).child("isOnline").setValue(isOnline).await()
+            devicesRef.child(deviceId).child("lastSeen").setValue(System.currentTimeMillis()).await()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to update device status for $deviceId: ${e.message}", e)
+            // Don't rethrow - allow the app to continue running even if Firebase write fails
+        }
     }
     
     fun observeLockStatus(deviceId: String): Flow<Boolean> = callbackFlow {
@@ -41,7 +46,9 @@ class ChildRepository {
             
             override fun onCancelled(error: DatabaseError) {
                 Log.w(TAG, "Lock status listener cancelled for device $deviceId: ${error.message}", error.toException())
-                close(error.toException())
+                // Send default value (unlocked) instead of closing with error to prevent crash
+                trySend(false)
+                close()
             }
         }
         
@@ -58,7 +65,9 @@ class ChildRepository {
             
             override fun onCancelled(error: DatabaseError) {
                 Log.w(TAG, "Screen time limit listener cancelled for device $deviceId: ${error.message}", error.toException())
-                close(error.toException())
+                // Send default value (0 limit) instead of closing with error to prevent crash
+                trySend(0)
+                close()
             }
         }
         
@@ -75,7 +84,9 @@ class ChildRepository {
             
             override fun onCancelled(error: DatabaseError) {
                 Log.w(TAG, "Screen time listener cancelled for device $deviceId: ${error.message}", error.toException())
-                close(error.toException())
+                // Send null instead of closing with error to prevent crash
+                trySend(null)
+                close()
             }
         }
         
@@ -84,8 +95,13 @@ class ChildRepository {
     }
     
     suspend fun updateScreenTimeUsage(deviceId: String, usedMinutes: Int) {
-        screenTimeRef.child(deviceId).child("usedMinutesToday").setValue(usedMinutes).await()
-        screenTimeRef.child(deviceId).child("lastUpdated").setValue(System.currentTimeMillis()).await()
+        try {
+            screenTimeRef.child(deviceId).child("usedMinutesToday").setValue(usedMinutes).await()
+            screenTimeRef.child(deviceId).child("lastUpdated").setValue(System.currentTimeMillis()).await()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to update screen time usage for $deviceId: ${e.message}", e)
+            // Don't rethrow - allow the app to continue running even if Firebase write fails
+        }
     }
     
     fun observeAppControls(deviceId: String): Flow<Map<String, Boolean>> = callbackFlow {
@@ -102,7 +118,9 @@ class ChildRepository {
             
             override fun onCancelled(error: DatabaseError) {
                 Log.w(TAG, "App controls listener cancelled for device $deviceId: ${error.message}", error.toException())
-                close(error.toException())
+                // Send empty map instead of closing with error to prevent crash
+                trySend(emptyMap())
+                close()
             }
         }
         
@@ -121,7 +139,9 @@ class ChildRepository {
             
             override fun onCancelled(error: DatabaseError) {
                 Log.w(TAG, "App controls full listener cancelled for device $deviceId: ${error.message}", error.toException())
-                close(error.toException())
+                // Send empty list instead of closing with error to prevent crash
+                trySend(emptyList())
+                close()
             }
         }
         
@@ -130,7 +150,12 @@ class ChildRepository {
     }
     
     suspend fun updateAppUsageTime(deviceId: String, packageName: String, usedMinutes: Int) {
-        appControlRef.child(deviceId).child(packageName).child("usedTimeToday").setValue(usedMinutes).await()
+        try {
+            appControlRef.child(deviceId).child(packageName).child("usedTimeToday").setValue(usedMinutes).await()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to update app usage time for $packageName on $deviceId: ${e.message}", e)
+            // Don't rethrow - allow the app to continue running even if Firebase write fails
+        }
     }
     
     fun observeAllowedContacts(deviceId: String): Flow<Set<String>> = callbackFlow {
@@ -149,7 +174,9 @@ class ChildRepository {
             
             override fun onCancelled(error: DatabaseError) {
                 Log.w(TAG, "Allowed contacts listener cancelled for device $deviceId: ${error.message}", error.toException())
-                close(error.toException())
+                // Send empty set instead of closing with error to prevent crash
+                trySend(emptySet())
+                close()
             }
         }
         
@@ -158,14 +185,19 @@ class ChildRepository {
     }
     
     suspend fun updateLocation(deviceId: String, latitude: Double, longitude: Double, accuracy: Float) {
-        val locationData = mapOf(
-            "deviceId" to deviceId,
-            "latitude" to latitude,
-            "longitude" to longitude,
-            "accuracy" to accuracy,
-            "timestamp" to System.currentTimeMillis()
-        )
-        locationsRef.child(deviceId).child("current").setValue(locationData).await()
+        try {
+            val locationData = mapOf(
+                "deviceId" to deviceId,
+                "latitude" to latitude,
+                "longitude" to longitude,
+                "accuracy" to accuracy,
+                "timestamp" to System.currentTimeMillis()
+            )
+            locationsRef.child(deviceId).child("current").setValue(locationData).await()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to update location for $deviceId: ${e.message}", e)
+            // Don't rethrow - allow the app to continue running even if Firebase write fails
+        }
     }
     
     fun observeLocationRequest(deviceId: String): Flow<Boolean> = callbackFlow {
@@ -180,7 +212,9 @@ class ChildRepository {
             
             override fun onCancelled(error: DatabaseError) {
                 Log.w(TAG, "Location request listener cancelled for device $deviceId: ${error.message}", error.toException())
-                close(error.toException())
+                // Send false instead of closing with error to prevent crash
+                trySend(false)
+                close()
             }
         }
         
@@ -199,7 +233,9 @@ class ChildRepository {
             
             override fun onCancelled(error: DatabaseError) {
                 Log.w(TAG, "Geofences listener cancelled for device $deviceId: ${error.message}", error.toException())
-                close(error.toException())
+                // Send empty list instead of closing with error to prevent crash
+                trySend(emptyList())
+                close()
             }
         }
         
