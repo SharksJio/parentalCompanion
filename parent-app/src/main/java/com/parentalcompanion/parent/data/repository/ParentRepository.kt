@@ -1,5 +1,6 @@
 package com.parentalcompanion.parent.data.repository
 
+import android.util.Log
 import com.google.firebase.database.*
 import com.parentalcompanion.parent.data.model.*
 import kotlinx.coroutines.channels.awaitClose
@@ -8,6 +9,10 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class ParentRepository {
+    
+    companion object {
+        private const val TAG = "ParentRepository"
+    }
     
     private val database = FirebaseDatabase.getInstance()
     private val devicesRef = database.getReference("devices")
@@ -32,6 +37,7 @@ class ParentRepository {
             }
             
             override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Connection state listener cancelled: ${error.message}", error.toException())
                 close(error.toException())
             }
         }
@@ -49,12 +55,13 @@ class ParentRepository {
                     trySend(device)
                 } catch (e: DatabaseException) {
                     // Log the error and send null to prevent crash
-                    android.util.Log.e("ParentRepository", "Failed to parse ChildDevice", e)
+                    Log.e(TAG, "Failed to parse ChildDevice", e)
                     trySend(null)
                 }
             }
             
             override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Child device listener cancelled for device $deviceId: ${error.message}", error.toException())
                 close(error.toException())
             }
         }
@@ -76,6 +83,7 @@ class ParentRepository {
             }
             
             override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Screen time listener cancelled for device $deviceId: ${error.message}", error.toException())
                 close(error.toException())
             }
         }
@@ -100,6 +108,7 @@ class ParentRepository {
             }
             
             override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "App controls listener cancelled for device $deviceId: ${error.message}", error.toException())
                 close(error.toException())
             }
         }
@@ -123,6 +132,7 @@ class ParentRepository {
             }
             
             override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Contacts listener cancelled for device $deviceId: ${error.message}", error.toException())
                 close(error.toException())
             }
         }
@@ -144,6 +154,7 @@ class ParentRepository {
             }
             
             override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Location listener cancelled for device $deviceId: ${error.message}", error.toException())
                 close(error.toException())
             }
         }
@@ -167,6 +178,7 @@ class ParentRepository {
             }
             
             override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Geofences listener cancelled for device $deviceId: ${error.message}", error.toException())
                 close(error.toException())
             }
         }
