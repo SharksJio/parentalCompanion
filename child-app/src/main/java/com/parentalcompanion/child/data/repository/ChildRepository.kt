@@ -101,6 +101,28 @@ class ChildRepository {
         awaitClose { appControlRef.child(deviceId).removeEventListener(listener) }
     }
     
+    fun observeAppControlsFull(deviceId: String): Flow<List<AppControl>> = callbackFlow {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val apps = snapshot.children.mapNotNull {
+                    it.getValue(AppControl::class.java)
+                }
+                trySend(apps)
+            }
+            
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
+            }
+        }
+        
+        appControlRef.child(deviceId).addValueEventListener(listener)
+        awaitClose { appControlRef.child(deviceId).removeEventListener(listener) }
+    }
+    
+    suspend fun updateAppUsageTime(deviceId: String, packageName: String, usedMinutes: Int) {
+        appControlRef.child(deviceId).child(packageName).child("usedTimeToday").setValue(usedMinutes).await()
+    }
+    
     fun observeAllowedContacts(deviceId: String): Flow<Set<String>> = callbackFlow {
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

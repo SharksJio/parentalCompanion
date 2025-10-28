@@ -24,6 +24,7 @@ class MonitoringService : LifecycleService() {
     private var deviceId: String = "test_device_id" // TODO: Get from SharedPreferences
     private val handler = Handler(Looper.getMainLooper())
     private var blockedApps = mutableMapOf<String, Boolean>()
+    private var appTimeLimits = mutableMapOf<String, Int>() // packageName to daily limit in minutes
     private var screenTimeLimitMinutes: Int = 0
     private var screenTimeUsedMinutes: Int = 0
     
@@ -65,10 +66,17 @@ class MonitoringService : LifecycleService() {
             }
         }
         
-        // Observe app controls (blocked apps)
+        // Observe app controls (blocked apps and time limits)
         lifecycleScope.launch {
-            repository.observeAppControls(deviceId).collect { appControls ->
-                blockedApps = appControls.toMutableMap()
+            repository.observeAppControlsFull(deviceId).collect { appControls ->
+                blockedApps.clear()
+                appTimeLimits.clear()
+                appControls.forEach { app ->
+                    blockedApps[app.packageName] = app.isBlocked
+                    if (app.dailyTimeLimit > 0) {
+                        appTimeLimits[app.packageName] = app.dailyTimeLimit
+                    }
+                }
             }
         }
         
@@ -133,10 +141,16 @@ class MonitoringService : LifecycleService() {
             // Get the most recently used app
             val recentApp = stats.maxByOrNull { it.lastTimeUsed }
             recentApp?.let { app ->
+                // Check if app is blocked
                 if (blockedApps[app.packageName] == true) {
-                    // App is blocked, show lock screen or go to home
                     Log.d(TAG, "Blocked app detected: ${app.packageName}")
                     goToHomeScreen()
+                    return
+                }
+                
+                // Check if app has exceeded its time limit
+                if (appTimeLimits.containsKey(app.packageName)) {
+                    checkAppTimeLimit(app.packageName, usageStatsManager)
                 }
             }
         } catch (e: Exception) {
@@ -150,6 +164,32 @@ class MonitoringService : LifecycleService() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         startActivity(intent)
+    }
+    
+    private fun checkAppTimeLimit(packageName: String, usageStatsManager: UsageStatsManager) {
+        try {
+            val startOfDay = getStartOfDay()
+            val currentTime = System.currentTimeMillis()
+            
+            val stats = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                startOfDay,
+                currentTime
+            )
+            
+            val appUsage = stats?.find { it.packageName == packageName }
+            if (appUsage != null) {
+                val usedMinutes = (appUsage.totalTimeInForeground / 60000).toInt()
+                val timeLimit = appTimeLimits[packageName] ?: 0
+                
+                if (timeLimit > 0 && usedMinutes >= timeLimit) {
+                    Log.d(TAG, "App time limit exceeded for $packageName: $usedMinutes >= $timeLimit")
+                    goToHomeScreen()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking app time limit", e)
+        }
     }
     
     private fun startScreenTimeTracking() {
@@ -183,9 +223,19 @@ class MonitoringService : LifecycleService() {
                 
                 screenTimeUsedMinutes = totalMinutes
                 
-                // Update Firebase
+                // Update Firebase with total screen time
                 lifecycleScope.launch {
                     repository.updateScreenTimeUsage(deviceId, totalMinutes)
+                }
+                
+                // Update per-app usage times for apps with time limits
+                lifecycleScope.launch {
+                    stats.forEach { appUsage ->
+                        if (appTimeLimits.containsKey(appUsage.packageName)) {
+                            val appMinutes = (appUsage.totalTimeInForeground / 60000).toInt()
+                            repository.updateAppUsageTime(deviceId, appUsage.packageName, appMinutes)
+                        }
+                    }
                 }
                 
                 checkScreenTimeLimit()
