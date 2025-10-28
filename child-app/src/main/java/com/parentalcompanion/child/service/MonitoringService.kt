@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.parentalcompanion.child.R
 import com.parentalcompanion.child.data.repository.ChildRepository
 import com.parentalcompanion.child.ui.LockScreenActivity
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class MonitoringService : LifecycleService() {
@@ -48,44 +49,60 @@ class MonitoringService : LifecycleService() {
         
         // Observe lock status
         lifecycleScope.launch {
-            repository.observeLockStatus(deviceId).collect { isLocked ->
-                if (isLocked) {
-                    showLockScreen()
+            repository.observeLockStatus(deviceId)
+                .catch { e ->
+                    Log.e(TAG, "Error observing lock status for device $deviceId", e)
                 }
-            }
+                .collect { isLocked ->
+                    if (isLocked) {
+                        showLockScreen()
+                    }
+                }
         }
         
         // Observe screen time limits
         lifecycleScope.launch {
-            repository.observeScreenTime(deviceId).collect { screenTime ->
-                screenTime?.let {
-                    screenTimeLimitMinutes = it.dailyLimitMinutes
-                    screenTimeUsedMinutes = it.usedMinutesToday
-                    checkScreenTimeLimit()
+            repository.observeScreenTime(deviceId)
+                .catch { e ->
+                    Log.e(TAG, "Error observing screen time for device $deviceId", e)
                 }
-            }
+                .collect { screenTime ->
+                    screenTime?.let {
+                        screenTimeLimitMinutes = it.dailyLimitMinutes
+                        screenTimeUsedMinutes = it.usedMinutesToday
+                        checkScreenTimeLimit()
+                    }
+                }
         }
         
         // Observe app controls (blocked apps and time limits)
         lifecycleScope.launch {
-            repository.observeAppControlsFull(deviceId).collect { appControls ->
-                blockedApps.clear()
-                appTimeLimits.clear()
-                appControls.forEach { app ->
-                    blockedApps[app.packageName] = app.isBlocked
-                    if (app.dailyTimeLimit > 0) {
-                        appTimeLimits[app.packageName] = app.dailyTimeLimit
+            repository.observeAppControlsFull(deviceId)
+                .catch { e ->
+                    Log.e(TAG, "Error observing app controls for device $deviceId", e)
+                }
+                .collect { appControls ->
+                    blockedApps.clear()
+                    appTimeLimits.clear()
+                    appControls.forEach { app ->
+                        blockedApps[app.packageName] = app.isBlocked
+                        if (app.dailyTimeLimit > 0) {
+                            appTimeLimits[app.packageName] = app.dailyTimeLimit
+                        }
                     }
                 }
-            }
         }
         
         // Observe geofences
         lifecycleScope.launch {
-            repository.observeGeofences(deviceId).collect { geofences ->
-                // Geofences are monitored - implementation can be extended
-                Log.d(TAG, "Geofences updated: ${geofences.size} geofences")
-            }
+            repository.observeGeofences(deviceId)
+                .catch { e ->
+                    Log.e(TAG, "Error observing geofences for device $deviceId", e)
+                }
+                .collect { geofences ->
+                    // Geofences are monitored - implementation can be extended
+                    Log.d(TAG, "Geofences updated: ${geofences.size} geofences")
+                }
         }
         
         // Start periodic checks

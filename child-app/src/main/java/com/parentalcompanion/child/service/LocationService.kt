@@ -9,6 +9,7 @@ import android.location.Location
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
@@ -16,22 +17,24 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.*
 import com.parentalcompanion.child.R
 import com.parentalcompanion.child.data.repository.ChildRepository
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class LocationService : LifecycleService() {
+    
+    companion object {
+        private const val TAG = "LocationService"
+        private const val CHANNEL_ID = "location_service_channel"
+        private const val NOTIFICATION_ID = 2
+        private const val LOCATION_UPDATE_INTERVAL = 300000L // 5 minutes
+        private const val FASTEST_LOCATION_UPDATE_INTERVAL = 60000L // 1 minute
+    }
     
     private val repository = ChildRepository()
     private var deviceId: String = "test_device_id" // TODO: Get from SharedPreferences
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var geofenceMonitor: GeofenceMonitor
-    
-    companion object {
-        private const val CHANNEL_ID = "location_service_channel"
-        private const val NOTIFICATION_ID = 2
-        private const val LOCATION_UPDATE_INTERVAL = 300000L // 5 minutes
-        private const val FASTEST_LOCATION_UPDATE_INTERVAL = 60000L // 1 minute
-    }
     
     override fun onCreate() {
         super.onCreate()
@@ -53,18 +56,26 @@ class LocationService : LifecycleService() {
         
         // Observe location request
         lifecycleScope.launch {
-            repository.observeLocationRequest(deviceId).collect { requested ->
-                if (requested) {
-                    getCurrentLocation()
+            repository.observeLocationRequest(deviceId)
+                .catch { e ->
+                    Log.e(TAG, "Error observing location request for device $deviceId", e)
                 }
-            }
+                .collect { requested ->
+                    if (requested) {
+                        getCurrentLocation()
+                    }
+                }
         }
         
         // Observe geofences and monitor them
         lifecycleScope.launch {
-            repository.observeGeofences(deviceId).collect { geofences ->
-                geofenceMonitor.checkGeofences(geofences)
-            }
+            repository.observeGeofences(deviceId)
+                .catch { e ->
+                    Log.e(TAG, "Error observing geofences for device $deviceId", e)
+                }
+                .collect { geofences ->
+                    geofenceMonitor.checkGeofences(geofences)
+                }
         }
     }
     
@@ -107,19 +118,27 @@ class LocationService : LifecycleService() {
     
     private fun updateLocation(location: Location) {
         lifecycleScope.launch {
-            repository.updateLocation(
-                deviceId,
-                location.latitude,
-                location.longitude,
-                location.accuracy
-            )
+            try {
+                repository.updateLocation(
+                    deviceId,
+                    location.latitude,
+                    location.longitude,
+                    location.accuracy
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating location for device $deviceId", e)
+            }
         }
         
         // Also check geofences when location updates
         lifecycleScope.launch {
-            repository.observeGeofences(deviceId).collect { geofences ->
-                geofenceMonitor.checkGeofences(geofences)
-            }
+            repository.observeGeofences(deviceId)
+                .catch { e ->
+                    Log.e(TAG, "Error observing geofences after location update for device $deviceId", e)
+                }
+                .collect { geofences ->
+                    geofenceMonitor.checkGeofences(geofences)
+                }
         }
     }
     
