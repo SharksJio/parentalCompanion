@@ -10,8 +10,11 @@ Parental Companion is a comprehensive parental control system that allows parent
 
 ### Parent App Features
 - **Dashboard**: View real-time status of child device
-- **Screen Time Control**: Set daily screen time limits
-- **App Usage Management**: Block or allow specific apps
+- **Screen Time Control**: Set daily screen time limits for the entire device
+- **App Usage Management**: 
+  - Block or allow specific apps
+  - Set individual time limits for each app
+  - Monitor app usage time in real-time
 - **Contact Management**: Control which contacts the child can communicate with
 - **Location Tracking**: Real-time location tracking of child device
 - **Geofencing**: Create safe zones and get notifications when child enters/exits
@@ -19,7 +22,11 @@ Parental Companion is a comprehensive parental control system that allows parent
 
 ### Child App Features
 - **Monitoring Service**: Runs as a foreground service to enforce parental controls
-- **Screen Time Enforcement**: Automatically locks device when time limit is exceeded
+- **Screen Time Enforcement**: 
+  - Tracks total device screen time usage
+  - Tracks per-app screen time usage
+  - Automatically locks device when overall time limit is exceeded
+  - Blocks apps that exceed their individual time limits
 - **App Blocking**: Prevents blocked apps from running
 - **Contact Filtering**: Restricts communication to allowed contacts only
 - **Location Sharing**: Shares device location with parent
@@ -168,7 +175,8 @@ firebase-root/
 │       └── {packageName}/
 │           ├── appName
 │           ├── isBlocked
-│           └── dailyTimeLimit
+│           ├── dailyTimeLimit     # Time limit in minutes (0 = no limit)
+│           └── usedTimeToday      # Usage time in minutes (updated by child app)
 ├── contacts/
 │   └── {deviceId}/
 │       └── {contactId}/
