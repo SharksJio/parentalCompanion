@@ -143,6 +143,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == REQUEST_PERMISSIONS) {
             checkAndStartService()
         }
+
     }
     
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
